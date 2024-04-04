@@ -2,19 +2,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const fileDropdown = document.getElementById("files");
     const keysDropdown = document.getElementById("keys");
     const valuesDropdown = document.getElementById("values");
-    
-    // Retrieve selected file from local storage, if exists
-    const storedFile = localStorage.getItem("selectedFile");
-    if (storedFile) {
-        fileDropdown.value = storedFile;
-    }
+    const datesInput = document.getElementById("dates");
     
     // Add event listener to file dropdown
     fileDropdown.addEventListener("change", function(event) {
         const selectedFile = event.target.value;
-        
-        // Save selected file in local storage
-        localStorage.setItem("selectedFile", selectedFile);
         
         // Fetch JSON data from the selected file
         fetch(selectedFile)
@@ -39,6 +31,9 @@ document.addEventListener("DOMContentLoaded", function() {
                         option.value = key;
                         keysDropdown.appendChild(option);
                     });
+                    
+                    // Trigger change event on keys dropdown to load data for the first key
+                    keysDropdown.dispatchEvent(new Event("change"));
                 } else {
                     console.error("Invalid JSON format. Expected an array.");
                 }
@@ -89,9 +84,24 @@ document.addEventListener("DOMContentLoaded", function() {
         valuesDropdown.selectedIndex = 0;
     }
     
-    // Auto-select the value from local storage when the page loads
-    const storedData = JSON.parse(localStorage.getItem("selectedData"));
-    if (storedData) {
-        populateValuesDropdown(storedData);
-    }
+    // Add event listener to dates input
+    datesInput.addEventListener("change", function(event) {
+        const selectedDate = event.target.value;
+        const dayOfWeek = new Date(selectedDate).getDay();
+        let selectedFile;
+        
+        // Determine the file based on the day of the week
+        if (dayOfWeek === 1) { // Monday
+            selectedFile = "monday.json";
+        } else if (dayOfWeek === 0) { // Sunday
+            selectedFile = "sunday.json";
+        } else {
+            console.error("Invalid day selected.");
+            return;
+        }
+        
+        // Trigger change event on file dropdown to load data for the selected file
+        fileDropdown.value = selectedFile;
+        fileDropdown.dispatchEvent(new Event("change"));
+    });
 });
