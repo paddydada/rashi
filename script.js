@@ -7,9 +7,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add event listener to file dropdown
     fileDropdown.addEventListener("change", function(event) {
         const selectedFile = event.target.value;
-
-        // Store selected file name in local storage
-        localStorage.setItem("selectedFile", selectedFile);
         
         // Fetch JSON data from the selected file
         fetch(selectedFile)
@@ -106,34 +103,32 @@ document.addEventListener("DOMContentLoaded", function() {
         fileDropdown.value = selectedFile;
         fileDropdown.dispatchEvent(new Event("change"));
         
-        // Calculate and store the sum of values from the selected file, if it's not sunday.json
-        if (selectedFile !== "sunday.json") {
+        // Calculate and store the sum of values from the selected file, if it's kumbha.json
+        if (selectedFile === "kumbha.json") {
             calculateAndStoreSum(selectedFile);
         }
     });
     
-    // Function to calculate the sum of values for the selected file
+    // Function to calculate the sum of values for kumbhamn and kumbhapl from kumbha.json
     function calculateAndStoreSum(selectedFile) {
         // Fetch JSON data from the selected file
         fetch(selectedFile)
             .then(response => response.json())
             .then(data => {
-                // Retrieve selected sheet data based on the file name
-                const selectedSheetData = data[localStorage.getItem("selectedFile").replace(".json", "").toUpperCase()];
+                // Extract kumbhamn and kumbhapl values
+                const kumbhamn = data["KUNBHAMN"];
+                const kumbhapl = data["KUNBHAPL"];
                 
-                // Check if the selected sheet data is available
-                if (selectedSheetData) {
-                    // Sum the values from the selected sheet data
-                    const sum = selectedSheetData.reduce((acc, val) => acc + val, 0);
-                    
-                    // Display alert with the sum
-                    alert("Sum of selected sheet data: " + sum);
-                    
-                    // Store the sum in local storage
-                    localStorage.setItem("selectedSheetSum", sum);
-                } else {
-                    console.error("Selected sheet data not found in JSON.");
-                }
+                // Calculate the sum of kumbhamn and kumbhapl
+                const sumKumbhamn = kumbhamn.reduce((acc, val) => acc + val, 0);
+                const sumKumbhapl = kumbhapl.reduce((acc, val) => acc + val, 0);
+                
+                // Display alert with the sum
+                alert("Sum of Kumbhamn: " + sumKumbhamn + "\nSum of Kumbhapl: " + sumKumbhapl);
+                
+                // Store the sum in local storage
+                localStorage.setItem("sumKumbhamn", sumKumbhamn);
+                localStorage.setItem("sumKumbhapl", sumKumbhapl);
             })
             .catch(error => console.error("Error calculating sum:", error));
     }
