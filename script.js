@@ -2,18 +2,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const fileDropdown = document.getElementById("files");
     const keysDropdown = document.getElementById("keys");
     const valuesDropdown = document.getElementById("values");
-    const datesInput = document.getElementById("dates");
     
-    // Retrieve selected file and key from local storage, if exists
+    // Retrieve selected file from local storage, if exists
     const storedFile = localStorage.getItem("selectedFile");
-    const storedKey = localStorage.getItem("selectedKey");
     if (storedFile) {
         fileDropdown.value = storedFile;
-        fileDropdown.dispatchEvent(new Event("change"));
-    }
-    if (storedKey) {
-        keysDropdown.value = storedKey;
-        keysDropdown.dispatchEvent(new Event("change"));
     }
     
     // Add event listener to file dropdown
@@ -46,9 +39,6 @@ document.addEventListener("DOMContentLoaded", function() {
                         option.value = key;
                         keysDropdown.appendChild(option);
                     });
-                    
-                    // Trigger change event on keys dropdown to load data for the first key
-                    keysDropdown.dispatchEvent(new Event("change"));
                 } else {
                     console.error("Invalid JSON format. Expected an array.");
                 }
@@ -97,5 +87,11 @@ document.addEventListener("DOMContentLoaded", function() {
         
         // Select the first value by default
         valuesDropdown.selectedIndex = 0;
+    }
+    
+    // Auto-select the value from local storage when the page loads
+    const storedData = JSON.parse(localStorage.getItem("selectedData"));
+    if (storedData) {
+        populateValuesDropdown(storedData);
     }
 });
