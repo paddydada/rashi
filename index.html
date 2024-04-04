@@ -7,35 +7,17 @@
 </head>
 <body>
     <h1>JSON Data Display</h1>
+    <label for="files">Select a file:</label>
+    <select id="files">
+        <option value="kark.json">kark.json</option>
+        <!-- Add other file options here -->
+    </select>
+
     <label for="keys">Select a key:</label>
-    <select id="keys"></select>
+    <select id="keys">
+        <!-- Key options will be added by script.js -->
+    </select>
 
-    <script>
-        // Fetch JSON data from another file
-        fetch('dhanu.json')
-            .then(response => response.json())
-            .then(jsonData => {
-                const keysDropdown = document.getElementById('keys');
-
-                // Populate dropdown with keys
-                jsonData.forEach(item => {
-                    const key = Object.keys(item)[0];
-                    const option = document.createElement('option');
-                    option.text = key;
-                    keysDropdown.add(option);
-                });
-
-                // Event listener for dropdown change
-                keysDropdown.addEventListener('change', function() {
-                    const selectedKey = this.value;
-                    const selectedItem = jsonData.find(item => Object.keys(item)[0] === selectedKey);
-                    const selectedData = selectedItem[selectedKey];
-
-                    // Display selected data in alert
-                    alert(JSON.stringify(selectedData, null, 2));
-                });
-            })
-            .catch(error => console.error('Error fetching JSON data:', error));
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
