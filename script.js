@@ -2,10 +2,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const fileDropdown = document.getElementById("files");
     const keysDropdown = document.getElementById("keys");
     
-    // Trigger change event on file dropdown to load JSON data when the page loads
-    fileDropdown.value = "kark.json";
-    fileDropdown.dispatchEvent(new Event("change"));
-    
     // Add event listener to file dropdown
     fileDropdown.addEventListener("change", function(event) {
         const selectedFile = event.target.value;
@@ -23,8 +19,11 @@ document.addEventListener("DOMContentLoaded", function() {
                     const option = document.createElement("option");
                     option.text = key;
                     option.value = key;
-                    keysDropdown.add(option);
+                    keysDropdown.appendChild(option); // Append the option to the dropdown
                 });
+                
+                // Trigger change event on keys dropdown to load data for the first key
+                keysDropdown.dispatchEvent(new Event("change"));
             })
             .catch(error => console.error("Error loading JSON data:", error));
     });
