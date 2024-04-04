@@ -4,9 +4,24 @@ document.addEventListener("DOMContentLoaded", function() {
     const valuesDropdown = document.getElementById("values");
     const datesInput = document.getElementById("dates");
     
+    // Retrieve selected file and key from local storage, if exists
+    const storedFile = localStorage.getItem("selectedFile");
+    const storedKey = localStorage.getItem("selectedKey");
+    if (storedFile) {
+        fileDropdown.value = storedFile;
+        fileDropdown.dispatchEvent(new Event("change"));
+    }
+    if (storedKey) {
+        keysDropdown.value = storedKey;
+        keysDropdown.dispatchEvent(new Event("change"));
+    }
+    
     // Add event listener to file dropdown
     fileDropdown.addEventListener("change", function(event) {
         const selectedFile = event.target.value;
+        
+        // Save selected file in local storage
+        localStorage.setItem("selectedFile", selectedFile);
         
         // Fetch JSON data from the selected file
         fetch(selectedFile)
@@ -83,25 +98,4 @@ document.addEventListener("DOMContentLoaded", function() {
         // Select the first value by default
         valuesDropdown.selectedIndex = 0;
     }
-    
-    // Add event listener to dates input
-    datesInput.addEventListener("change", function(event) {
-        const selectedDate = event.target.value;
-        const dayOfWeek = new Date(selectedDate).getDay();
-        let selectedFile;
-        
-        // Determine the file based on the day of the week
-        if (dayOfWeek === 1) { // Monday
-            selectedFile = "monday.json";
-        } else if (dayOfWeek === 0) { // Sunday
-            selectedFile = "sunday.json";
-        } else {
-            console.error("Invalid day selected.");
-            return;
-        }
-        
-        // Trigger change event on file dropdown to load data for the selected file
-        fileDropdown.value = selectedFile;
-        fileDropdown.dispatchEvent(new Event("change"));
-    });
 });
