@@ -86,8 +86,8 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Add event listener to dates input
     datesInput.addEventListener("change", function(event) {
-        const selectedDate = event.target.value;
-        const dayOfWeek = new Date(selectedDate).getDay();
+        const selectedDate = new Date(event.target.value);
+        const dayOfWeek = selectedDate.getDay();
         let selectedFile;
         
         // Determine the file based on the day of the week
