@@ -1,10 +1,20 @@
 document.addEventListener("DOMContentLoaded", function() {
     const fileDropdown = document.getElementById("files");
     const keysDropdown = document.getElementById("keys");
+    const valuesDropdown = document.getElementById("values");
+    
+    // Retrieve selected file from local storage, if exists
+    const storedFile = localStorage.getItem("selectedFile");
+    if (storedFile) {
+        fileDropdown.value = storedFile;
+    }
     
     // Add event listener to file dropdown
     fileDropdown.addEventListener("change", function(event) {
         const selectedFile = event.target.value;
+        
+        // Save selected file in local storage
+        localStorage.setItem("selectedFile", selectedFile);
         
         // Fetch JSON data from the selected file
         fetch(selectedFile)
@@ -12,6 +22,12 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(data => {
                 // Clear previous options
                 keysDropdown.innerHTML = "";
+                
+                // Add default option to keys dropdown
+                const defaultOption = document.createElement("option");
+                defaultOption.text = "Select key";
+                defaultOption.value = "";
+                keysDropdown.appendChild(defaultOption);
                 
                 // Check if the data is an array
                 if (Array.isArray(data)) {
@@ -21,11 +37,8 @@ document.addEventListener("DOMContentLoaded", function() {
                         const option = document.createElement("option");
                         option.text = key;
                         option.value = key;
-                        keysDropdown.appendChild(option); // Append the option to the dropdown
+                        keysDropdown.appendChild(option);
                     });
-                    
-                    // Trigger change event on keys dropdown to load data for the first key
-                    keysDropdown.dispatchEvent(new Event("change"));
                 } else {
                     console.error("Invalid JSON format. Expected an array.");
                 }
@@ -50,12 +63,35 @@ document.addEventListener("DOMContentLoaded", function() {
                     localStorage.setItem("selectedKey", selectedKey);
                     localStorage.setItem("selectedData", JSON.stringify(selectedEntry[selectedKey]));
                     
-                    // Display an alert with the selected key's data
-                    alert(JSON.stringify(selectedEntry[selectedKey]));
+                    // Populate values dropdown with values from the selected key's data
+                    populateValuesDropdown(selectedEntry[selectedKey]);
                 } else {
                     console.error("Selected key not found in JSON data.");
                 }
             })
             .catch(error => console.error("Error loading JSON data:", error));
     });
+    
+    // Function to populate the values dropdown
+    function populateValuesDropdown(values) {
+        // Clear previous options
+        valuesDropdown.innerHTML = "";
+        
+        // Extract values from the object and populate the dropdown
+        for (const value in values) {
+            const option = document.createElement("option");
+            option.text = values[value];
+            option.value = values[value];
+            valuesDropdown.appendChild(option);
+        }
+        
+        // Select the first value by default
+        valuesDropdown.selectedIndex = 0;
+    }
+    
+    // Auto-select the value from local storage when the page loads
+    const storedData = JSON.parse(localStorage.getItem("selectedData"));
+    if (storedData) {
+        populateValuesDropdown(storedData);
+    }
 });
