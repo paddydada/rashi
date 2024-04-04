@@ -1,50 +1,53 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const fileSelect = document.getElementById('files');
-    const keySelect = document.getElementById('keys');
-
-    fileSelect.addEventListener('change', function() {
-        // Clear existing options
-        keySelect.innerHTML = '';
-
-        // Fetch the selected file's JSON data
-        const selectedFile = fileSelect.value;
+document.addEventListener("DOMContentLoaded", function() {
+    const fileDropdown = document.getElementById("files");
+    const keysDropdown = document.getElementById("keys");
+    
+    // Trigger change event on file dropdown to load JSON data when the page loads
+    fileDropdown.value = "kark.json";
+    fileDropdown.dispatchEvent(new Event("change"));
+    
+    // Add event listener to file dropdown
+    fileDropdown.addEventListener("change", function(event) {
+        const selectedFile = event.target.value;
+        
+        // Fetch JSON data from the selected file
         fetch(selectedFile)
             .then(response => response.json())
             .then(data => {
-                // Populate the keys dropdown with keys from the selected file
+                // Clear previous options
+                keysDropdown.innerHTML = "";
+                
+                // Populate keys dropdown with keys from loaded JSON data
                 data.forEach(entry => {
-                    const option = document.createElement('option');
-                    option.value = entry.Key;
-                    option.textContent = entry.Key;
-                    keySelect.appendChild(option);
+                    const key = Object.keys(entry)[0];
+                    const option = document.createElement("option");
+                    option.text = key;
+                    option.value = key;
+                    keysDropdown.add(option);
                 });
             })
-            .catch(error => console.error('Error fetching JSON data:', error));
+            .catch(error => console.error("Error loading JSON data:", error));
+    });
+    
+    // Add event listener to keys dropdown
+    keysDropdown.addEventListener("change", function(event) {
+        const selectedKey = event.target.value;
+        const selectedFile = fileDropdown.value;
+        
+        // Fetch JSON data from the selected file
+        fetch(selectedFile)
+            .then(response => response.json())
+            .then(data => {
+                // Find the entry with the selected key
+                const selectedEntry = data.find(entry => Object.keys(entry)[0] === selectedKey);
+                
+                // Store selected key and its corresponding data in local storage
+                localStorage.setItem("selectedKey", selectedKey);
+                localStorage.setItem("selectedData", JSON.stringify(selectedEntry[selectedKey]));
+                
+                // Display an alert with the selected key's data
+                alert(JSON.stringify(selectedEntry[selectedKey]));
+            })
+            .catch(error => console.error("Error loading JSON data:", error));
     });
 });
-
-// // Load JSON data from the file
-// fetch('dhanu.json')
-//     .then(response => response.json())
-//     .then(data => {
-//         const keysDropdown = document.getElementById('keys');
-
-//         // Populate dropdown with keys
-//         data.forEach(item => {
-//             const key = Object.keys(item)[0];
-//             const option = document.createElement('option');
-//             option.text = key;
-//             keysDropdown.add(option);
-//         });
-
-//         // Event listener for dropdown change
-//         keysDropdown.addEventListener('change', function() {
-//             const selectedKey = this.value;
-//             const selectedItem = data.find(item => Object.keys(item)[0] === selectedKey);
-//             const selectedData = selectedItem[selectedKey];
-
-//             // Display selected data in alert
-//             alert(JSON.stringify(selectedData, null, 2));
-//         });
-//     })
-//     .catch(error => console.error('Error loading JSON data:', error));
