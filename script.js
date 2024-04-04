@@ -113,36 +113,28 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     
     // Function to calculate the sum of values for the selected file
-  // Function to calculate the sum of values for the selected file
-function calculateAndStoreSum(selectedFile) {
-    // Fetch JSON data from the selected file
-    fetch(selectedFile)
-        .then(response => response.json())
-        .then(data => {
-            // Get the prefix for PL or MN based on the selected file name
-            const prefix = localStorage.getItem("selectedFile").replace(".json", "").toUpperCase();
-            
-            // Retrieve the corresponding PL and MN data arrays
-            const plData = data[`${prefix}PL`];
-            const mnData = data[`${prefix}MN`];
-            
-            // Check if both PL and MN data are available
-            if (plData && mnData) {
-                // Sum the values from both PL and MN data arrays
-                const sumPL = plData.reduce((acc, val) => acc + val, 0);
-                const sumMN = mnData.reduce((acc, val) => acc + val, 0);
+    function calculateAndStoreSum(selectedFile) {
+        // Fetch JSON data from the selected file
+        fetch(selectedFile)
+            .then(response => response.json())
+            .then(data => {
+                // Retrieve selected sheet data based on the file name
+                const selectedSheetData = data[localStorage.getItem("selectedFile").replace(".json", "").toUpperCase()];
                 
-                // Display alert with the sums
-                alert(`Sum of ${prefix}PL: ${sumPL}\nSum of ${prefix}MN: ${sumMN}`);
-                
-                // Store the sums in local storage
-                localStorage.setItem(`${prefix}SumPL`, sumPL);
-                localStorage.setItem(`${prefix}SumMN`, sumMN);
-            } else {
-                console.error("Sheet data not found in JSON.");
-            }
-        })
-        .catch(error => console.error("Error calculating sum:", error));
-}
-
+                // Check if the selected sheet data is available
+                if (selectedSheetData) {
+                    // Sum the values from the selected sheet data
+                    const sum = selectedSheetData.reduce((acc, val) => acc + val, 0);
+                    
+                    // Display alert with the sum
+                    alert("Sum of selected sheet data: " + sum);
+                    
+                    // Store the sum in local storage
+                    localStorage.setItem("selectedSheetSum", sum);
+                } else {
+                    console.error("Selected sheet data not found in JSON.");
+                }
+            })
+            .catch(error => console.error("Error calculating sum:", error));
+    }
 });
