@@ -103,5 +103,28 @@ document.addEventListener("DOMContentLoaded", function() {
         // Trigger change event on file dropdown to load data for the selected file
         fileDropdown.value = selectedFile;
         fileDropdown.dispatchEvent(new Event("change"));
+        
+        // Calculate and store the sum of values from the selected file
+        calculateAndStoreSum(selectedFile);
     });
+    
+    // Function to calculate the sum of values from the selected file and store it in local storage
+    function calculateAndStoreSum(selectedFile) {
+        // Fetch JSON data from the selected file
+        fetch(selectedFile)
+            .then(response => response.json())
+            .then(data => {
+                let sum = 0;
+                // Iterate over each entry in the data
+                data.forEach(entry => {
+                    // Extract the values array from the entry
+                    const valuesArray = Object.values(entry)[0];
+                    // Sum up the values in the array
+                    sum += valuesArray.reduce((acc, curr) => acc + parseInt(curr), 0);
+                });
+                // Store the sum in local storage
+                localStorage.setItem("sumOfValues", sum);
+            })
+            .catch(error => console.error("Error calculating sum:", error));
+    }
 });
