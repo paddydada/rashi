@@ -21,10 +21,11 @@ document.addEventListener("DOMContentLoaded", function() {
                 defaultOption.value = "";
                 keysDropdown.appendChild(defaultOption);
                 
-                // Check if the data is an object
-                if (typeof data === "object" && !Array.isArray(data)) {
+                // Check if the data is an array
+                if (Array.isArray(data)) {
                     // Populate keys dropdown with keys from loaded JSON data
-                    Object.keys(data).forEach(key => {
+                    data.forEach(entry => {
+                        const key = Object.keys(entry)[0];
                         const option = document.createElement("option");
                         option.text = key;
                         option.value = key;
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     // Trigger change event on keys dropdown to load data for the first key
                     keysDropdown.dispatchEvent(new Event("change"));
                 } else {
-                    console.error("Invalid JSON format. Expected an object.");
+                    console.error("Invalid JSON format. Expected an array.");
                 }
             })
             .catch(error => console.error("Error loading JSON data:", error));
@@ -50,15 +51,15 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(response => response.json())
             .then(data => {
                 // Find the entry with the selected key
-                const selectedEntry = data[selectedKey];
+                const selectedEntry = data.find(entry => Object.keys(entry)[0] === selectedKey);
                 
                 if (selectedEntry) {
                     // Store selected key and its corresponding data in local storage
                     localStorage.setItem("selectedKey", selectedKey);
-                    localStorage.setItem("selectedData", JSON.stringify(selectedEntry));
+                    localStorage.setItem("selectedData", JSON.stringify(selectedEntry[selectedKey]));
                     
                     // Populate values dropdown with values from the selected key's data
-                    populateValuesDropdown(selectedEntry);
+                    populateValuesDropdown(selectedEntry[selectedKey]);
                 } else {
                     console.error("Selected key not found in JSON data.");
                 }
@@ -74,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Extract values from the object and populate the dropdown
         for (const value in values) {
             const option = document.createElement("option");
-            option.text = value;
+            option.text = values[value];
             option.value = values[value];
             valuesDropdown.appendChild(option);
         }
@@ -85,8 +86,8 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Add event listener to dates input
     datesInput.addEventListener("change", function(event) {
-        const selectedDate = new Date(event.target.value);
-        const dayOfWeek = selectedDate.getDay();
+        const selectedDate = event.target.value;
+        const dayOfWeek = new Date(selectedDate).getDay();
         let selectedFile;
         
         // Determine the file based on the day of the week
@@ -102,34 +103,5 @@ document.addEventListener("DOMContentLoaded", function() {
         // Trigger change event on file dropdown to load data for the selected file
         fileDropdown.value = selectedFile;
         fileDropdown.dispatchEvent(new Event("change"));
-        
-        // Calculate and store the sum of values from the selected file, if it's kumbha.json
-        if (selectedFile === "kumbha.json") {
-            calculateAndStoreSum(selectedFile);
-        }
     });
-    
-    // Function to calculate the sum of values for kumbhamn and kumbhapl from kumbha.json
-    function calculateAndStoreSum(selectedFile) {
-        // Fetch JSON data from the selected file
-        fetch(selectedFile)
-            .then(response => response.json())
-            .then(data => {
-                // Extract kumbhamn and kumbhapl values
-                const kumbhamn = data["KUNBHAMN"];
-                const kumbhapl = data["KUNBHAPL"];
-                
-                // Calculate the sum of kumbhamn and kumbhapl
-                const sumKumbhamn = kumbhamn.reduce((acc, val) => acc + val, 0);
-                const sumKumbhapl = kumbhapl.reduce((acc, val) => acc + val, 0);
-                
-                // Display alert with the sum
-                alert("Sum of Kumbhamn: " + sumKumbhamn + "\nSum of Kumbhapl: " + sumKumbhapl);
-                
-                // Store the sum in local storage
-                localStorage.setItem("sumKumbhamn", sumKumbhamn);
-                localStorage.setItem("sumKumbhapl", sumKumbhapl);
-            })
-            .catch(error => console.error("Error calculating sum:", error));
-    }
 });
