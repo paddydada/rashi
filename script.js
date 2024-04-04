@@ -7,6 +7,9 @@ document.addEventListener("DOMContentLoaded", function() {
     // Add event listener to file dropdown
     fileDropdown.addEventListener("change", function(event) {
         const selectedFile = event.target.value;
+
+        // Store selected file name in local storage
+        localStorage.setItem("selectedFile", selectedFile);
         
         // Fetch JSON data from the selected file
         fetch(selectedFile)
@@ -103,33 +106,43 @@ document.addEventListener("DOMContentLoaded", function() {
         fileDropdown.value = selectedFile;
         fileDropdown.dispatchEvent(new Event("change"));
         
-        // Calculate and store the sum of values from the selected file, if it's kumbha.json
-        if (selectedFile === "kumbha.json") {
+        // Calculate and store the sum of values from the selected file, if it's not sunday.json
+        if (selectedFile !== "sunday.json") {
             calculateAndStoreSum(selectedFile);
         }
     });
     
-    // Function to calculate the sum of values for kumbhamn and kumbhapl from kumbha.json
-    function calculateAndStoreSum(selectedFile) {
-        // Fetch JSON data from the selected file
-        fetch(selectedFile)
-            .then(response => response.json())
-            .then(data => {
-                // Extract kumbhamn and kumbhapl values
-                const kumbhamn = data["KUNBHAMN"];
-                const kumbhapl = data["KUNBHAPL"];
+    // Function to calculate the sum of values for the selected file
+  // Function to calculate the sum of values for the selected file
+function calculateAndStoreSum(selectedFile) {
+    // Fetch JSON data from the selected file
+    fetch(selectedFile)
+        .then(response => response.json())
+        .then(data => {
+            // Get the prefix for PL or MN based on the selected file name
+            const prefix = localStorage.getItem("selectedFile").replace(".json", "").toUpperCase();
+            
+            // Retrieve the corresponding PL and MN data arrays
+            const plData = data[`${prefix}PL`];
+            const mnData = data[`${prefix}MN`];
+            
+            // Check if both PL and MN data are available
+            if (plData && mnData) {
+                // Sum the values from both PL and MN data arrays
+                const sumPL = plData.reduce((acc, val) => acc + val, 0);
+                const sumMN = mnData.reduce((acc, val) => acc + val, 0);
                 
-                // Calculate the sum of kumbhamn and kumbhapl
-                const sumKumbhamn = kumbhamn.reduce((acc, val) => acc + val, 0);
-                const sumKumbhapl = kumbhapl.reduce((acc, val) => acc + val, 0);
+                // Display alert with the sums
+                alert(`Sum of ${prefix}PL: ${sumPL}\nSum of ${prefix}MN: ${sumMN}`);
                 
-                // Display alert with the sum
-                alert("Sum of Kumbhamn: " + sumKumbhamn + "\nSum of Kumbhapl: " + sumKumbhapl);
-                
-                // Store the sum in local storage
-                localStorage.setItem("sumKumbhamn", sumKumbhamn);
-                localStorage.setItem("sumKumbhapl", sumKumbhapl);
-            })
-            .catch(error => console.error("Error calculating sum:", error));
-    }
+                // Store the sums in local storage
+                localStorage.setItem(`${prefix}SumPL`, sumPL);
+                localStorage.setItem(`${prefix}SumMN`, sumMN);
+            } else {
+                console.error("Sheet data not found in JSON.");
+            }
+        })
+        .catch(error => console.error("Error calculating sum:", error));
+}
+
 });
