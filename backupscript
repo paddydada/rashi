@@ -1,10 +1,11 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Get references to DOM elements
     const fileDropdown = document.getElementById("files");
     const keysDropdown = document.getElementById("keys");
     const valuesDropdown = document.getElementById("values");
     const datesInput = document.getElementById("dates");
     
-    // Retrieve selected file, key, and value from local storage, if exists
+    // Retrieve selected file, key, and value from local storage, if they exist
     const storedFile = localStorage.getItem("selectedFile");
     const storedKey = localStorage.getItem("selectedKey");
     const storedValue = localStorage.getItem("selectedValue");
@@ -20,22 +21,18 @@ document.addEventListener("DOMContentLoaded", function() {
         valuesDropdown.value = storedValue;
     }
     
-    // Trigger change event on file dropdown if stored file exists
+    // Trigger change events if stored values exist
     if (storedFile) {
         fileDropdown.dispatchEvent(new Event("change"));
     }
-    
-    // Trigger change event on keys dropdown if stored key exists
     if (storedKey) {
         keysDropdown.dispatchEvent(new Event("change"));
     }
-    
-    // Trigger change event on values dropdown if stored value exists
     if (storedValue) {
         valuesDropdown.dispatchEvent(new Event("change"));
     }
     
-    // Add event listener to file dropdown
+    // Event listener for file dropdown
     fileDropdown.addEventListener("change", function(event) {
         const selectedFile = event.target.value;
         
@@ -74,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch(error => console.error("Error loading JSON data:", error));
     });
     
-    // Add event listener to keys dropdown
+    // Event listener for keys dropdown
     keysDropdown.addEventListener("change", function(event) {
         const selectedKey = event.target.value;
         const selectedFile = fileDropdown.value;
@@ -91,9 +88,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     localStorage.setItem("selectedKey", selectedKey);
                     localStorage.setItem("selectedData", JSON.stringify(selectedEntry));
                     
-                    // Calculate and store the sum of values associated with the selected key
-                    calculateAndStoreSum(selectedEntry);
-                    
                     // Populate values dropdown with values from the selected key's data
                     populateValuesDropdown(selectedEntry);
                 } else {
@@ -102,12 +96,6 @@ document.addEventListener("DOMContentLoaded", function() {
             })
             .catch(error => console.error("Error loading JSON data:", error));
     });
-    
-    // Function to calculate and store the sum of values associated with the selected key
-    function calculateAndStoreSum(selectedEntry) {
-        const sum = Object.values(selectedEntry).reduce((acc, value) => acc + value, 0);
-        localStorage.setItem("selectedSum", sum);
-    }
     
     // Function to populate the values dropdown
     function populateValuesDropdown(values) {
@@ -124,9 +112,12 @@ document.addEventListener("DOMContentLoaded", function() {
         
         // Select the first value by default
         valuesDropdown.selectedIndex = 0;
+        
+        // Save selected value in local storage
+        localStorage.setItem("selectedValue", valuesDropdown.value);
     }
     
-    // Add event listener to dates input
+    // Event listener for dates input
     datesInput.addEventListener("change", function(event) {
         const selectedDate = new Date(event.target.value);
         const dayOfWeek = selectedDate.getDay();
@@ -135,13 +126,12 @@ document.addEventListener("DOMContentLoaded", function() {
         // Determine the file based on the day of the week
         if (dayOfWeek === 1) { // Monday
             selectedFile = "monday.json";
+            
+            // Trigger change event on file dropdown to load data for the selected file
+            fileDropdown.value = selectedFile;
+            fileDropdown.dispatchEvent(new Event("change"));
         } else {
             console.error("Invalid day selected.");
-            return;
         }
-        
-        // Trigger change event on file dropdown to load data for the selected file
-        fileDropdown.value = selectedFile;
-        fileDropdown.dispatchEvent(new Event("change"));
     });
 });
