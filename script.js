@@ -53,21 +53,17 @@ document.addEventListener("DOMContentLoaded", function() {
                     defaultOption.value = "";
                     keysDropdown.appendChild(defaultOption);
                     
-                    // Check if the data is an object
-                    if (typeof data === 'object' && !Array.isArray(data)) {
-                        // Populate keys dropdown with keys from loaded JSON data
-                        Object.keys(data).forEach(key => {
-                            const option = document.createElement("option");
-                            option.text = key;
-                            option.value = key;
-                            keysDropdown.appendChild(option);
-                        });
-                        
-                        // Trigger change event on keys dropdown to load data for the first key
-                        keysDropdown.dispatchEvent(new Event("change"));
-                    } else {
-                        console.error("Invalid JSON format. Expected an object.");
-                    }
+                    // Populate keys dropdown with keys from loaded JSON data
+                    data.forEach(entry => {
+                        const key = Object.keys(entry)[0]; // Get the key of each entry
+                        const option = document.createElement("option");
+                        option.text = key;
+                        option.value = key;
+                        keysDropdown.appendChild(option);
+                    });
+                    
+                    // Trigger change event on keys dropdown to load data for the first key
+                    keysDropdown.dispatchEvent(new Event("change"));
                 })
                 .catch(error => console.error("Error loading JSON data:", error));
         } else {
@@ -85,15 +81,17 @@ document.addEventListener("DOMContentLoaded", function() {
             .then(response => response.json())
             .then(data => {
                 // Find the entry with the selected key
-                const selectedEntry = data[selectedKey];
+                const selectedEntry = data.find(entry => {
+                    return Object.keys(entry)[0] === selectedKey;
+                });
                 
                 if (selectedEntry) {
                     // Store selected key and its corresponding data in local storage
                     localStorage.setItem("selectedKey", selectedKey);
-                    localStorage.setItem("selectedData", JSON.stringify(selectedEntry));
+                    localStorage.setItem("selectedData", JSON.stringify(selectedEntry[selectedKey]));
                     
                     // Populate values dropdown with values from the selected key's data
-                    populateValuesDropdown(selectedEntry);
+                    populateValuesDropdown(selectedEntry[selectedKey]);
                 } else {
                     console.error("Selected key not found in JSON data.");
                 }
