@@ -40,35 +40,39 @@ document.addEventListener("DOMContentLoaded", function() {
         localStorage.setItem("selectedFile", selectedFile);
         
         // Fetch JSON data from the selected file
-        fetch(selectedFile)
-            .then(response => response.json())
-            .then(data => {
-                // Clear previous options
-                keysDropdown.innerHTML = "";
-                
-                // Add default option to keys dropdown
-                const defaultOption = document.createElement("option");
-                defaultOption.text = "Select key";
-                defaultOption.value = "";
-                keysDropdown.appendChild(defaultOption);
-                
-                // Check if the data is an object
-                if (typeof data === 'object' && !Array.isArray(data)) {
-                    // Populate keys dropdown with keys from loaded JSON data
-                    Object.keys(data).forEach(key => {
-                        const option = document.createElement("option");
-                        option.text = key;
-                        option.value = key;
-                        keysDropdown.appendChild(option);
-                    });
+        if (selectedFile) {
+            fetch(selectedFile)
+                .then(response => response.json())
+                .then(data => {
+                    // Clear previous options
+                    keysDropdown.innerHTML = "";
                     
-                    // Trigger change event on keys dropdown to load data for the first key
-                    keysDropdown.dispatchEvent(new Event("change"));
-                } else {
-                    console.error("Invalid JSON format. Expected an object.");
-                }
-            })
-            .catch(error => console.error("Error loading JSON data:", error));
+                    // Add default option to keys dropdown
+                    const defaultOption = document.createElement("option");
+                    defaultOption.text = "Select key";
+                    defaultOption.value = "";
+                    keysDropdown.appendChild(defaultOption);
+                    
+                    // Check if the data is an object
+                    if (typeof data === 'object' && !Array.isArray(data)) {
+                        // Populate keys dropdown with keys from loaded JSON data
+                        Object.keys(data).forEach(key => {
+                            const option = document.createElement("option");
+                            option.text = key;
+                            option.value = key;
+                            keysDropdown.appendChild(option);
+                        });
+                        
+                        // Trigger change event on keys dropdown to load data for the first key
+                        keysDropdown.dispatchEvent(new Event("change"));
+                    } else {
+                        console.error("Invalid JSON format. Expected an object.");
+                    }
+                })
+                .catch(error => console.error("Error loading JSON data:", error));
+        } else {
+            console.error("No file selected.");
+        }
     });
     
     // Event listener for keys dropdown
