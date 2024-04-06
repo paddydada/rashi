@@ -1,5 +1,5 @@
 [
-  {
+  
     "CHANDRA-GURU-CHANDRA": {
       "1": "CHANDRA",
       "2": "MANGAL",
@@ -11,8 +11,8 @@
       "8": "SHUKRA",
       "9": "RAVI"
     }
-  },
-  {
+  ,
+  
     "CHANDRA-GURU-MANGAL": {
       "1": "MANGAL",
       "2": "RAHU",
@@ -24,8 +24,8 @@
       "8": "RAVI",
       "9": "CHANDRA"
     }
-  },
-  {
+  ,
+  
     "CHANDRA-GURU-RAHU": {
       "1": "RAHU",
       "2": "GURU",
@@ -37,8 +37,8 @@
       "8": "CHANDRA",
       "9": "MANGAL"
     }
-  },
-  {
+  ,
+  
     "CHANDRA-SHANI-SHANI": {
       "1": "SHANI",
       "2": "BUDH",
@@ -50,8 +50,8 @@
       "8": "RAHU",
       "9": "GURU"
     }
-  },
-  {
+  ,
+  
     "CHANDRA-SHANI-BUDH": {
       "1": "BUDH",
       "2": "KETU",
@@ -63,8 +63,8 @@
       "8": "GURU",
       "9": "SHANI"
     }
-  },
-  {
+  ,
+  
     "CHANDRA-SHANI-KETU": {
       "1": "KETU",
       "2": "SHUKRA",
@@ -76,8 +76,8 @@
       "8": "SHANI",
       "9": "BUDH"
     }
-  },
-  {
+  ,
+  
     "CHANDRA-SHANI-SHUKRA": {
       "1": "SHUKRA",
       "2": "RAVI",
@@ -89,8 +89,8 @@
       "8": "BUDH",
       "9": "KETU"
     }
-  },
-  {
+  ,
+  
     "CHANDRA-SHANI-RAVI": {
       "1": "RAVI",
       "2": "CHANDRA",
@@ -102,8 +102,8 @@
       "8": "KETU",
       "9": "SHUKRA"
     }
-  },
-  {
+  ,
+  
     "CHANDRA-SHANI-RAVI": {
       "1": "CHANDRA",
       "2": "MANGAL",
@@ -116,8 +116,8 @@
       "9": "RAVI",
       "Key": "CHANDRA-SHANI-CHANDRA"
     }
-  },
-  {
+  ,
+  
     "CHANDRA-SHANI-MANGAL": {
       "1": "MANGAL",
       "2": "RAHU",
@@ -129,8 +129,8 @@
       "8": "RAVI",
       "9": "CHANDRA"
     }
-  },
-  {
+  ,
+  
     "CHANDRA-SHANI-RAHU": {
       "1": "RAHU",
       "2": "GURU",
@@ -142,8 +142,8 @@
       "8": "CHANDRA",
       "9": "MANGAL"
     }
-  },
-  {
+  ,
+  
     "CHANDRA-SHANI-GURU": {
       "1": "GURU",
       "2": "SHANI",
@@ -155,7 +155,7 @@
       "8": "MANGAL",
       "9": "RAHU"
     }
-  },
+  ,
   {
     "CHANDRA-BUDH-BUDH": {
       "1": "BUDH",
