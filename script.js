@@ -1,10 +1,11 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Get references to DOM elements
     const fileDropdown = document.getElementById("files");
     const keysDropdown = document.getElementById("keys");
     const valuesDropdown = document.getElementById("values");
     const datesInput = document.getElementById("dates");
     
-    // Retrieve selected file, key, and value from local storage, if exists
+    // Retrieve selected file, key, and value from local storage, if they exist
     const storedFile = localStorage.getItem("selectedFile");
     const storedKey = localStorage.getItem("selectedKey");
     const storedValue = localStorage.getItem("selectedValue");
@@ -20,22 +21,18 @@ document.addEventListener("DOMContentLoaded", function() {
         valuesDropdown.value = storedValue;
     }
     
-    // Trigger change event on file dropdown if stored file exists
+    // Trigger change events if stored values exist
     if (storedFile) {
         fileDropdown.dispatchEvent(new Event("change"));
     }
-    
-    // Trigger change event on keys dropdown if stored key exists
     if (storedKey) {
         keysDropdown.dispatchEvent(new Event("change"));
     }
-    
-    // Trigger change event on values dropdown if stored value exists
     if (storedValue) {
         valuesDropdown.dispatchEvent(new Event("change"));
     }
     
-    // Add event listener to file dropdown
+    // Event listener for file dropdown
     fileDropdown.addEventListener("change", function(event) {
         const selectedFile = event.target.value;
         
@@ -74,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch(error => console.error("Error loading JSON data:", error));
     });
     
-    // Add event listener to keys dropdown
+    // Event listener for keys dropdown
     keysDropdown.addEventListener("change", function(event) {
         const selectedKey = event.target.value;
         const selectedFile = fileDropdown.value;
@@ -113,14 +110,14 @@ document.addEventListener("DOMContentLoaded", function() {
             valuesDropdown.appendChild(option);
         }
         
-        // Select the stored value or the first value by default
-        valuesDropdown.value = storedValue || valuesDropdown.options[0].value;
+        // Select the first value by default
+        valuesDropdown.selectedIndex = 0;
         
         // Save selected value in local storage
         localStorage.setItem("selectedValue", valuesDropdown.value);
     }
     
-    // Add event listener to dates input
+    // Event listener for dates input
     datesInput.addEventListener("change", function(event) {
         const selectedDate = new Date(event.target.value);
         const dayOfWeek = selectedDate.getDay();
