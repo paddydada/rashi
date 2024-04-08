@@ -19,20 +19,26 @@ fileDropdown.addEventListener("change", function(event) {
                 defaultOption.value = "";
                 keysDropdown.appendChild(defaultOption);
                 
-                // Check if the data is an object
-                if (typeof data === 'object' && !Array.isArray(data)) {
+                // Check if the data is an array
+                if (Array.isArray(data)) {
                     // Populate keys dropdown with keys from loaded JSON data
-                    Object.keys(data).forEach(key => {
+                    data.forEach(item => {
+                        // Get the key from the object
+                        const key = Object.keys(item)[0];
+                        
+                        // Create an option element
                         const option = document.createElement("option");
                         option.text = key;
                         option.value = key;
+                        
+                        // Append option to the dropdown
                         keysDropdown.appendChild(option);
                     });
                     
                     // Trigger change event on keys dropdown to load data for the first key
                     keysDropdown.dispatchEvent(new Event("change"));
                 } else {
-                    console.error("Invalid JSON format. Expected an object.");
+                    console.error("Invalid JSON format. Expected an array.");
                 }
             })
             .catch(error => console.error("Error loading JSON data:", error))
