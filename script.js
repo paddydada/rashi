@@ -28,7 +28,12 @@ fileDropdown.addEventListener("change", function(event) {
                         
                         // Create an option element
                         const option = document.createElement("option");
-                        option.text = key;
+                        
+                        // Split the key string and join the relevant parts
+                        const keyParts = key.split("-");
+                        const dropdownValue = `${keyParts[0]}-${keyParts[1]}-${keyParts[2]}`;
+                        
+                        option.text = dropdownValue;
                         option.value = key;
                         
                         // Append option to the dropdown
