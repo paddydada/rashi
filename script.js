@@ -22,6 +22,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 });
                 // Store keys in local storage
                 localStorage.setItem('keys', JSON.stringify(keys));
+
+                // Set the selected key based on local storage
+                const selectedKey = localStorage.getItem('selectedKey');
+                if (selectedKey && keys.includes(selectedKey)) {
+                    keysSelect.value = selectedKey;
+                    // Trigger change event to load values
+                    keysSelect.dispatchEvent(new Event('change'));
+                }
             });
     });
 
@@ -39,6 +47,9 @@ document.addEventListener("DOMContentLoaded", function() {
         });
         // Store values in local storage
         localStorage.setItem('selectedValue', values[0]); // Default to the first value
+
+        // Store selected key in local storage
+        localStorage.setItem('selectedKey', selectedKey);
     });
 
     // Handle date selection
@@ -58,4 +69,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.log(result); // You can do whatever you want with the result here
             });
     });
+
+    // Initial loading
+    const selectedFile = localStorage.getItem('selectedFile');
+    if (selectedFile) {
+        filesSelect.value = selectedFile;
+        // Trigger change event to load keys
+        filesSelect.dispatchEvent(new Event('change'));
+    }
 });
