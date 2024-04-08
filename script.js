@@ -34,24 +34,32 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Load values on key selection
-    keysSelect.addEventListener('change', function() {
-        const selectedKey = keysSelect.value;
-        const keys = JSON.parse(localStorage.getItem('keys'));
-        const values = keys[selectedKey];
+  keysSelect.addEventListener('change', function() {
+    const selectedKey = keysSelect.value;
+    const keys = JSON.parse(localStorage.getItem('keys'));
+    const values = data[selectedKey];
 
-        valuesSelect.innerHTML = '';
+    valuesSelect.innerHTML = '';
+
+    // Check if values is an array before iterating over it
+    if (Array.isArray(values)) {
         values.forEach(value => {
             const option = document.createElement('option');
             option.text = value;
             valuesSelect.add(option);
         });
-        // Store values in local storage
-        localStorage.setItem('selectedValue', values[0]); // Default to the first value
+    } else {
+        const option = document.createElement('option');
+        option.text = values;
+        valuesSelect.add(option);
+    }
 
-        // Store selected key in local storage
-        localStorage.setItem('selectedKey', selectedKey);
-    });
+    // Store values in local storage
+    localStorage.setItem('selectedValue', values[0]); // Default to the first value
 
+    // Store selected key in local storage
+    localStorage.setItem('selectedKey', selectedKey);
+});
     // Handle date selection
     datesInput.addEventListener('change', function() {
         const selectedDate = new Date(datesInput.value);
