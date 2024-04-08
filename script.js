@@ -7,9 +7,17 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Event listener for file dropdown
     fileDropdown.addEventListener("change", function(event) {
-        // Clear local storage values
-        localStorage.removeItem("selectedKey");
-        localStorage.removeItem("selectedData");
+        const selectedFile = event.target.value;
+        
+        // Check if the selected file exists in local storage
+        const storedFile = localStorage.getItem("selectedFile");
+        
+        // If the selected file is different from the one stored, update local storage
+        if (selectedFile !== storedFile) {
+            localStorage.setItem("selectedFile", selectedFile);
+            localStorage.removeItem("selectedKey");
+            localStorage.removeItem("selectedData");
+        }
         
         // Trigger change event on keys dropdown to clear its options
         keysDropdown.dispatchEvent(new Event("change"));
