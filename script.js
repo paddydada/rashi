@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
     fileDropdown.addEventListener("change", function(event) {
         // Clear local storage values
         localStorage.removeItem("selectedKey");
-        localStorage.removeItem("selectedValue");
+        localStorage.removeItem("selectedData");
         
         // Trigger change event on keys dropdown to clear its options
         keysDropdown.dispatchEvent(new Event("change"));
@@ -45,12 +45,8 @@ document.addEventListener("DOMContentLoaded", function() {
     
     // Event listener for values dropdown
     valuesDropdown.addEventListener("change", function(event) {
-        // Clear local storage values except for selectedFile
-        localStorage.removeItem("selectedKey");
-        localStorage.removeItem("selectedData");
-        
-        // Trigger change event on dates input to clear its value
-        datesInput.value = "";
+        // Store selected value in local storage
+        localStorage.setItem("selectedValue", event.target.value);
     });
     
     // Event listener for dates input
@@ -85,6 +81,12 @@ document.addEventListener("DOMContentLoaded", function() {
             option.text = values[key];
             option.value = values[key];
             valuesDropdown.appendChild(option);
+        }
+        
+        // Select the stored value if it exists
+        const storedValue = localStorage.getItem("selectedValue");
+        if (storedValue && valuesDropdown.querySelector(`option[value="${storedValue}"]`)) {
+            valuesDropdown.value = storedValue;
         }
     }
 });
