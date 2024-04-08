@@ -1,118 +1,61 @@
-// Assuming the HTML elements have the same IDs as mentioned in the code
-
 document.addEventListener("DOMContentLoaded", function() {
-    const fileDropdown = document.getElementById("files");
-    const keysDropdown = document.getElementById("keys");
-    const valuesDropdown = document.getElementById("values");
-    const datesInput = document.getElementById("dates");
-    
-    // Retrieve selected file, key, and value from local storage, if they exist
-    const storedFile = localStorage.getItem("selectedFile");
-    const storedKey = localStorage.getItem("selectedKey");
-    const storedValue = localStorage.getItem("selectedValue");
-    
-    // Set dropdown values from local storage
-    if (storedFile) {
-        fileDropdown.value = storedFile;
-    }
-    if (storedKey) {
-        keysDropdown.value = storedKey;
-    }
-    if (storedValue) {
-        valuesDropdown.value = storedValue;
-    }
-    
-    // Trigger change events if stored values exist
-    if (storedFile) {
-        fileDropdown.dispatchEvent(new Event("change"));
-    }
-    if (storedKey) {
-        keysDropdown.dispatchEvent(new Event("change"));
-    }
-    if (storedValue) {
-        valuesDropdown.dispatchEvent(new Event("change"));
-    }
-    
-    fileDropdown.addEventListener("change", function(event) {
-        const selectedFile = event.target.value;
-        
-        localStorage.setItem("selectedFile", selectedFile);
-        
+    const filesSelect = document.getElementById('files');
+    const keysSelect = document.getElementById('keys');
+    const valuesSelect = document.getElementById('values');
+    const datesInput = document.getElementById('dates');
+
+    // Load file and keys on dropdown change
+    filesSelect.addEventListener('change', function() {
+        const selectedFile = filesSelect.value;
+        localStorage.setItem('selectedFile', selectedFile);
+
+        // Load keys for selected file
         fetch(selectedFile)
             .then(response => response.json())
             .then(data => {
-                keysDropdown.innerHTML = "";
-                
-                const defaultOption = document.createElement("option");
-                defaultOption.text = "Select key";
-                defaultOption.value = "";
-                keysDropdown.appendChild(defaultOption);
-                
-                if (typeof data === 'object' && !Array.isArray(data)) {
-                    Object.keys(data).forEach(key => {
-                        const option = document.createElement("option");
-                        option.text = key;
-                        option.value = key;
-                        keysDropdown.appendChild(option);
-                    });
-                    
-                    keysDropdown.dispatchEvent(new Event("change"));
-                } else {
-                    console.error("Invalid JSON format. Expected an object.");
-                }
-            })
-            .catch(error => console.error("Error loading JSON data:", error));
+                const keys = Object.keys(data);
+                keysSelect.innerHTML = '';
+                keys.forEach(key => {
+                    const option = document.createElement('option');
+                    option.text = key;
+                    keysSelect.add(option);
+                });
+                // Store keys in local storage
+                localStorage.setItem('keys', JSON.stringify(keys));
+            });
     });
-    
-    keysDropdown.addEventListener("change", function(event) {
-        const selectedKey = event.target.value;
-        const selectedFile = fileDropdown.value;
-        
-        fetch(selectedFile)
+
+    // Load values on key selection
+    keysSelect.addEventListener('change', function() {
+        const selectedKey = keysSelect.value;
+        const keys = JSON.parse(localStorage.getItem('keys'));
+        const values = keys[selectedKey];
+
+        valuesSelect.innerHTML = '';
+        values.forEach(value => {
+            const option = document.createElement('option');
+            option.text = value;
+            valuesSelect.add(option);
+        });
+        // Store values in local storage
+        localStorage.setItem('selectedValue', values[0]); // Default to the first value
+    });
+
+    // Handle date selection
+    datesInput.addEventListener('change', function() {
+        const selectedDate = new Date(datesInput.value);
+        const dayOfWeek = selectedDate.toLocaleDateString('en', { weekday: 'long' }).toLowerCase(); // Get day of the week in lowercase
+
+        // Load data for the selected day of the week
+        const dayFile = dayOfWeek + '.json';
+        fetch(dayFile)
             .then(response => response.json())
             .then(data => {
-                const selectedEntry = data[selectedKey];
-                
-                if (selectedEntry) {
-                    localStorage.setItem("selectedKey", selectedKey);
-                    localStorage.setItem("selectedData", JSON.stringify(selectedEntry));
-                    
-                    populateValuesDropdown(selectedEntry);
-                } else {
-                    console.error("Selected key not found in JSON data.");
-                }
-            })
-            .catch(error => console.error("Error loading JSON data:", error));
-    });
-    
-    function populateValuesDropdown(values) {
-        valuesDropdown.innerHTML = "";
-        
-        for (const key in values) {
-            const option = document.createElement("option");
-            option.text = key;
-            option.value = values[key];
-            valuesDropdown.appendChild(option);
-        }
-        
-        valuesDropdown.selectedIndex = 0;
-        
-        localStorage.setItem("selectedValue", valuesDropdown.value);
-    }
-    
-    datesInput.addEventListener("change", function(event) {
-        const selectedDate = new Date(event.target.value);
-        const dayOfWeek = selectedDate.getDay();
-        let selectedFile;
-        
-        if (dayOfWeek === 1) { // Monday
-            selectedFile = "monday.json";
-        } else {
-            console.error("Invalid day selected.");
-            return; // Exit early if the day is invalid
-        }
-        
-        fileDropdown.value = selectedFile;
-        fileDropdown.dispatchEvent(new Event("change"));
+                // Display data for the selected key and value
+                const selectedKey = keysSelect.value;
+                const selectedValue = valuesSelect.value;
+                const result = data[selectedKey][selectedValue];
+                console.log(result); // You can do whatever you want with the result here
+            });
     });
 });
