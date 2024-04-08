@@ -5,70 +5,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const valuesDropdown = document.getElementById("values");
     const datesInput = document.getElementById("dates");
     
-    // Retrieve selected file, key, and value from local storage, if they exist
-    const storedFile = localStorage.getItem("selectedFile");
-    const storedKey = localStorage.getItem("selectedKey");
-    const storedValue = localStorage.getItem("selectedValue");
-    
-    // Set dropdown values from local storage
-    if (storedFile) {
-        fileDropdown.value = storedFile;
-    }
-    if (storedKey) {
-        keysDropdown.value = storedKey;
-    }
-    if (storedValue) {
-        valuesDropdown.value = storedValue;
-    }
-    
-    // Trigger change events if stored values exist
-    if (storedFile) {
-        fileDropdown.dispatchEvent(new Event("change"));
-    }
-    if (storedKey) {
-        keysDropdown.dispatchEvent(new Event("change"));
-    }
-    if (storedValue) {
-        valuesDropdown.dispatchEvent(new Event("change"));
-    }
-    
     // Event listener for file dropdown
     fileDropdown.addEventListener("change", function(event) {
-        const selectedFile = event.target.value;
+        // Clear local storage values
+        localStorage.removeItem("selectedKey");
+        localStorage.removeItem("selectedValue");
         
-        // Save selected file in local storage
-        localStorage.setItem("selectedFile", selectedFile);
-        
-        // Fetch JSON data from the selected file
-        if (selectedFile) {
-            fetch(selectedFile)
-                .then(response => response.json())
-                .then(data => {
-                    // Clear previous options
-                    keysDropdown.innerHTML = "";
-                    
-                    // Add default option to keys dropdown
-                    const defaultOption = document.createElement("option");
-                    defaultOption.text = "Select key";
-                    defaultOption.value = "";
-                    keysDropdown.appendChild(defaultOption);
-                    
-                    // Populate keys dropdown with keys from loaded JSON data
-                    data.forEach(entry => {
-                        const key = Object.keys(entry)[0]; // Get the key of each entry
-                        const option = document.createElement("option");
-                        option.text = key;
-                        option.value = key;
-                        keysDropdown.appendChild(option);
-                    });
-                    
-                    // Trigger change event on keys dropdown to load data for the first key
-                    keysDropdown.dispatchEvent(new Event("change"));
-                })
-                .catch(error => console.error("Error loading JSON data:", error));
-        } else {
-            console.error("No file selected.");
-        }
+        // Trigger change event on keys dropdown to clear its options
+        keysDropdown.dispatchEvent(new Event("change"));
     });
     
     // Event listener for keys dropdown
@@ -99,25 +43,15 @@ document.addEventListener("DOMContentLoaded", function() {
             .catch(error => console.error("Error loading JSON data:", error));
     });
     
-    // Function to populate the values dropdown
-    function populateValuesDropdown(values) {
-        // Clear previous options
-        valuesDropdown.innerHTML = "";
+    // Event listener for values dropdown
+    valuesDropdown.addEventListener("change", function(event) {
+        // Clear local storage values except for selectedFile
+        localStorage.removeItem("selectedKey");
+        localStorage.removeItem("selectedData");
         
-        // Extract values from the object and populate the dropdown
-        for (const key in values) {
-            const option = document.createElement("option");
-            option.text = key;
-            option.value = values[key];
-            valuesDropdown.appendChild(option);
-        }
-        
-        // Select the first value by default
-        valuesDropdown.selectedIndex = 0;
-        
-        // Save selected value in local storage
-        localStorage.setItem("selectedValue", valuesDropdown.value);
-    }
+        // Trigger change event on dates input to clear its value
+        datesInput.value = "";
+    });
     
     // Event listener for dates input
     datesInput.addEventListener("change", function(event) {
@@ -132,8 +66,25 @@ document.addEventListener("DOMContentLoaded", function() {
             // Trigger change event on file dropdown to load data for the selected file
             fileDropdown.value = selectedFile;
             fileDropdown.dispatchEvent(new Event("change"));
+            
+            // Alert the selected day
+            alert("Selected day: Monday");
         } else {
             console.error("Invalid day selected.");
         }
     });
+    
+    // Function to populate the values dropdown
+    function populateValuesDropdown(values) {
+        // Clear previous options
+        valuesDropdown.innerHTML = "";
+        
+        // Extract values from the object and populate the dropdown
+        for (const key in values) {
+            const option = document.createElement("option");
+            option.text = values[key];
+            option.value = values[key];
+            valuesDropdown.appendChild(option);
+        }
+    }
 });
