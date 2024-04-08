@@ -104,7 +104,7 @@
     }
   },
   {
-    "CHANDRA-SHANI-CHANDRA": {
+    "CHANDRA-SHANI-RAVI": {
       "1": "CHANDRA",
       "2": "MANGAL",
       "3": "RAHU",
@@ -113,7 +113,8 @@
       "6": "BUDH",
       "7": "KETU",
       "8": "SHUKRA",
-      "9": "RAVI"
+      "9": "RAVI",
+      "Key": "CHANDRA-SHANI-CHANDRA"
     }
   },
   {
