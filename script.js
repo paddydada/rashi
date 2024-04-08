@@ -34,7 +34,8 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Load values on key selection
-  keysSelect.addEventListener('change', function() {
+// Load values on key selection
+keysSelect.addEventListener('change', function() {
     const selectedKey = keysSelect.value;
     const keys = JSON.parse(localStorage.getItem('keys'));
     const values = data[selectedKey];
@@ -60,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Store selected key in local storage
     localStorage.setItem('selectedKey', selectedKey);
 });
+
     // Handle date selection
     datesInput.addEventListener('change', function() {
         const selectedDate = new Date(datesInput.value);
